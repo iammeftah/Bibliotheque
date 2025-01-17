@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import wav.hmed.microservicepret.client.LivreClient;
+import wav.hmed.microservicepret.client.UserClient;
 import wav.hmed.microservicepret.model.Pret;
 import wav.hmed.microservicepret.repository.PretRepository;
 
@@ -19,6 +20,9 @@ public class PretService {
     @Autowired
     private LivreClient livreClient;
 
+    @Autowired
+    private UserClient userClient;
+
     // Enregistrer un prêt avec vérification de la disponibilité du livre
     @CircuitBreaker(name = "livreService", fallbackMethod = "fallbackEnregistrerPret")
     public Pret addPret(Pret pret) {
@@ -26,6 +30,12 @@ public class PretService {
         String livreDetails = livreClient.getLivreDetails(pret.getLivreId());
         if (livreDetails == null || livreDetails.contains("indisponible")) {
             throw new RuntimeException("Livre non disponible");
+        }
+
+        // Vérifier si le livre existe et est disponible
+        String userDetails = userClient.getUserDetails(pret.getUtilisateurId());
+        if (userDetails == null || userDetails.contains("indisponible")) {
+            throw new RuntimeException("user non disponible");
         }
 
         // Enregistrer le prêt

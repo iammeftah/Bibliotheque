@@ -20,6 +20,12 @@ public class UtilisateurController {
         return utilisateurService.getAllUtilisateurs();
     }
 
+    @GetMapping("/{id}")
+    public Utilisateur getUtilisateurById(@PathVariable Long id) {
+        return utilisateurService.getUtilisateurById(id);
+    }
+
+
     @PostMapping
     public Utilisateur addUtilisateur(@RequestBody Utilisateur utilisateur) {
         return utilisateurService.addUtilisateur(utilisateur);

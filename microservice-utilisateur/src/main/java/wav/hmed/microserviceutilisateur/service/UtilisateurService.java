@@ -20,4 +20,9 @@ public class UtilisateurService {
     public Utilisateur addUtilisateur(Utilisateur utilisateur) {
         return utilisateurRepository.save(utilisateur);
     }
+
+
+    public Utilisateur getUtilisateurById(Long id) {
+        return utilisateurRepository.findById(id).orElse(null);
+    }
 }
